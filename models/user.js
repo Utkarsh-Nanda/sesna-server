@@ -76,8 +76,8 @@ user_schema.methods.toJSON = function () {
 
   delete userObject.password
   delete userObject.tokens
-  //delete userObject.personal_detail.cover_picture
-  //delete userObject.personal_detail.display_picture
+  delete userObject.personal_detail.cover_picture
+  delete userObject.personal_detail.display_picture
 
   return userObject
 }
