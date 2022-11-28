@@ -7,8 +7,9 @@ const community_schema = new mongoose.Schema({
   community_brief: {
     community_name: { type: String, required: true, unique : true },
     community_dp: {type : Buffer},
-    user_count: { type: Number},
+    user_count: { type : Number},
     description: { type: String, required: true },
+    creator_id : {type : String , required : true} 
   },
   student_channel: [
     {
@@ -47,7 +48,7 @@ const community_schema = new mongoose.Schema({
   members: [{
     user_name : { type: String},
     user_id : { type: String} ,
-    role : {type : String , default : "4" },
+    role : {type : String , default : "student_channel" },
     user_dp: {type : Buffer}
   }]
 })

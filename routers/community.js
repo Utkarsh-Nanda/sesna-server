@@ -11,7 +11,7 @@ const router = new express.Router()
 
 router.post('/create_community',async(req, res) => {
     const community = new Community(req.body)
-    
+
     const time = community._id.getTimestamp()
     const tt=moment(time).format('l')
 
@@ -156,6 +156,8 @@ router.patch('/accept_request' , async(req,res)=>{
         community.community_brief.user_count = community.members.length 
         community.members.push(details)
         user.joined_community.push(details)
+        delete details.role
+        community.student_channel.push(details)
         await user.save()
         await community.save()
         res.send(user)
@@ -167,13 +169,74 @@ router.patch('/accept_request' , async(req,res)=>{
 })
 
 
-// router.patch('change_from_student', auth , async(req,res)=>{
-//     try{
+router.patch('/change_from_student', auth , async(req,res)=>{
+    try{
+        const community = await Community.findById(req.body.id)
+        if(!community)
+        {
+            return res.status(401).send({error : 'No community found'})
+        }
+        const user = await User.findById(req.body.user_id)
+        if(!user)
+        {
+            return res.status(401).send({error : 'No User found'})
+        }
+        let details = {}
+        let obj = {}
+        let check = 0
+        community.student_channel.forEach((element)=>{
+            if(element.user_id === req.body.user_id)
+            {
+                details['user_name'] = element.user_name
+                details['user_id'] = element.user_id
+                details['role'] = "4"
+                details['user_dp']=Buffer.from(element.user_dp)
+                obj['user_name'] = element.user_name
+                obj['user_id'] = element.user_id
+                obj['role'] = "4"
+                obj['user_dp']=Buffer.from(element.user_dp)
+                check = 1
+            }
+        })
+        if(check===0)
+        {
+            return res.status(401).send({error : 'No User found'})
+        }
+        user.joined_community = user.joined_community.filter((user_id)=>{
+            return user_id.user_id!=req.body.user_id;
+        })
+        delete details.role
+        if(req.body.role === "teacher")
+        {
+            community.teacher.push(details);
+            obj.role = "teacher"
+            user.joined_community.push(obj)
+        }
+        if(req.body.role === "mentor")
+        {
+            community.mentor.push(details);
+            obj.role = "mentor"
+            user.joined_community.push(obj)
+        }
+        if(req.body.role === "professional")
+        {
+            community.professional.push(details);
+            obj.role = "professional"
+            user.joined_community.push(obj)
+        }
+        
+        community.student_channel = community.student_channel.filter((user_id)=>{
+            return user_id.user_id!=req.body.user_id;
+        })
+        await community.save()
+        await user.save()
+        res.status(200).send(community)
 
-//     }catch(e){
-
-//     }
-// })
+    }catch(e){
+        //console.log(e)
+        res.status(400).send(e)
+    }
+})
 
 const upload = multer ({
     limits :{
