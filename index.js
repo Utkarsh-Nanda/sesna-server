@@ -46,7 +46,7 @@ const corsOptions ={
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
 }
-app.use(cors(corsOptions));
+
 
 app.use(express.json())
 app.use(user_router)
@@ -56,6 +56,19 @@ app.use(community_router)
 app.use("/chat", chat_router)
 app.use("/message", message_router)
 
+app.use(cors(corsOptions));
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Max-Age", "1800");
+  res.setHeader("Access-Control-Allow-Headers", "content-type");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "PUT, POST, GET, DELETE, PATCH, OPTIONS"
+  );
+  next();
+});
+app.use(cors());
 
 const server = app.listen(port, () => {
     console.log('Server is up on port ' + port)
