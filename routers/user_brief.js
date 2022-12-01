@@ -7,8 +7,8 @@ router.get('/get_all_user_brief', async(req, res) => {
     try {
         const user_brief = await User_brief.find({})
         res.send(user_brief)
-    } catch (e) {
-        res.status(500).send()
+    } catch(error){
+        res.status(400).send(error.message)
     }
 })
 

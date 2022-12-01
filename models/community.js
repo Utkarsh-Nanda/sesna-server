@@ -22,21 +22,21 @@ const community_schema = new mongoose.Schema({
     {
       user_name : { type: String},
       user_id : { type: String} ,
-      user_dp: {type : Buffer}
+      user_dp: {type : Buffer }
     }
   ],
   professional: [
     {
       user_name : { type: String},
       user_id : { type: String} ,
-      user_dp: {type : Buffer}
+      user_dp: {type : Buffer }
     }
   ],
   teacher: [
     {
       user_name : { type: String},
       user_id : { type: String} ,
-      user_dp: {type : Buffer}
+      user_dp: {type : Buffer }
     }
   ],
   requests: [{

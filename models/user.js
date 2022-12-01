@@ -49,9 +49,11 @@ const user_schema = new mongoose.Schema({
     },
   display_picture : {type : Buffer},
   cover_picture : {type : Buffer},
+  description : {type : String , default : "Hey there, I am using SESNA"}
   },
   is_admin: {
     type: Boolean,
+    default : false
   },
   is_public: {
     type: Boolean,
@@ -59,10 +61,9 @@ const user_schema = new mongoose.Schema({
   },
   friends: [{ name: { type: String }, friend_id: { type: String } }],
   joined_community: [{
-      user_name : { type: String},
-      user_id : { type: String} ,
+      community_name : { type: String},
+      community_id : { type: String} ,
       role : {type : String },
-      user_dp: {type : Buffer}
     }
   ],
   tokens:[
@@ -97,11 +98,11 @@ user_schema.statics.findbycredentials = async(email,password)=>{
   if(!user)
   {
     //console.log("cannot find")
-    throw new Error('Unable to login')
+    throw new Error('Email not valid')
   }
   const is_match = await bcrypt.compare(password,user.personal_detail.password)
   if(!is_match){
-    throw new Error('Unable to login')
+    throw new Error('Password Not Correct')
   }
   return user
 }
