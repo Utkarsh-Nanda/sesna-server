@@ -1,6 +1,8 @@
 const express = require('express')
 const CommunityBrief = require('../models/community_brief')
 const router = new express.Router()
+const multer = require('multer');
+const sharp = require('sharp');
 
 router.get('/get_all_community_brief', async(req, res) => {
     try {
@@ -11,7 +13,7 @@ router.get('/get_all_community_brief', async(req, res) => {
     }
 })
 
-router.get('/community_by_name' , async(req,res)=>{
+router.post('/community_by_name' , async(req,res)=>{
     try{
         const brief = await CommunityBrief.find({})
         //const query = req.body.search
@@ -46,6 +48,39 @@ router.get('/three_community' , async(req,res) =>{
         res.status(400).send(e.message)
     }
 
+})
+
+const upload = multer ({
+    limits :{
+        fileSize : 5000000
+    },
+    fileFilter(req, file , cb){
+        if(!file.originalname.match(/\.(jpg|jpeg|png|JPG)$/)){
+            return cb(new Error('please upload an image'))
+        }
+
+        cb(undefined, true)
+    }
+})
+
+router.post('/community_brief/picture', upload.single('community_brief_dp'), async (req, res) => {
+    //console.log(req)
+    try{
+        const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
+        const cc = await CommunityBrief.findById(req.body.id)
+
+        if(!cc)
+        {
+            throw new Error("community_brief not found")
+        }
+        cc.community_dp = buffer
+        await cc.save()
+        res.send(req.body.id)
+    } catch(e){
+        res.status(400).send(e.message)
+    } 
+}, (error, req, res, next) => {
+    res.status(400).send(error.message )
 })
 
 

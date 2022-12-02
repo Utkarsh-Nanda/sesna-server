@@ -256,23 +256,25 @@ const upload = multer ({
     }
 })
 
-router.patch('/community/picture', upload.single('community_dp'), async (req, res) => {
+router.post('/community/picture', upload.single('community_dp'), async (req, res) => {
     //console.log(req)
-    const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
-    const community = await Community.findById(req.body.id)
-    if(!community)
-    {
-        throw new Error("community not found")
-    }
-    const community_brief = await Community_brief.find({community_id : req.body.id})
-    if(!community_brief)
-    {
-        throw new Error("community_brief not found")
-    }
     try{
+        const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
+        const community = await Community.findById(req.body.id)
+        if(!community)
+        {
+            throw new Error("community not found")
+        }
+    
+        // const community_brief = await Community_brief.find({community_id : req.body.id})
+        // if(!community_brief)
+        // {
+        //     throw new Error("community_brief not found")
+        // }
+        console.log(buffer)
         community.community_brief.community_dp=buffer
-        community_brief.community_dp = buffer
-        await community_brief.save()
+        //community_brief.community_dp = buffer
+       // await community_brief.save()
         await community.save()
         res.send(req.body.id)
     } catch(e){
