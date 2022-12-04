@@ -47,8 +47,8 @@ const user_schema = new mongoose.Schema({
       type: String,
       required: true,
     },
-  display_picture : {type : Buffer},
-  cover_picture : {type : Buffer},
+  display_picture : {type : Buffer ,  default : ''},
+  cover_picture : {type : Buffer , default : ''},
   description : {type : String , default : "Hey there, I am using SESNA"}
   },
   is_admin: {

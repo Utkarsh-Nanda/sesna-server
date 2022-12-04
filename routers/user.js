@@ -115,10 +115,11 @@ router.post('/user/login', async(req, res) => {
     }
 })
 
-router.patch('user/change_description' , auth , async(req,res)=>{
+router.patch('/user/change_description' , auth , async(req,res)=>{
     try{
         req.user.personal_detail.description = req.body.description
         await req.user.save()
+        res.send(req.user)
     }catch(error)
     {
         //console.log(error.message)

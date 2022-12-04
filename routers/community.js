@@ -49,8 +49,6 @@ router.post('/create_community' , async(req, res) => {
         res.status(404)
         res.send(error.message)
     })
-
-    
 })
 
 // router.get('/get_all_community', async(req, res) => {
@@ -76,7 +74,7 @@ router.get('/community_by_id' , async(req,res)=>{
     }
 })
 
-router.patch('/add_community_request' , auth , async(req,res)=>{
+router.post('/add_community_request' , auth , async(req,res)=>{
     try{
         
         const community = await Community.findById(req.body.id)
@@ -84,8 +82,12 @@ router.patch('/add_community_request' , auth , async(req,res)=>{
         {
             throw new Error("community not found")
         }
-        const dp = Buffer.from(req.user.personal_detail.display_picture)
+        //console.log(community)
+       // console.log(req.user)
+        
+        const dp = Buffer.from((req.user).personal_detail.display_picture)
         //console.log(dp)
+        
 
         let user_detail = {}
 
@@ -97,6 +99,7 @@ router.patch('/add_community_request' , auth , async(req,res)=>{
         res.send(community);
         
     }catch(error){
+        console.log("a")
         res.status(400).send(error.message)
     }
 })

@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const community_schema = new mongoose.Schema({
   community_brief: {
     community_name: { type: String, required: true, unique : true },
-    community_dp: {type : Buffer},
+    community_dp: {type : Buffer , default : ''},
     user_count: { type : Number},
     description: { type: String, required: true },
     creator_id : {type : String , required : true} 
